@@ -1,5 +1,6 @@
 # img2nfp
-Simple unix program for converting images into nfp files to be used in tweaked: cc.
+Simple unix program for converting images into nfp files to be used in [tweaked: cc](https://tweaked.cc/).
+This program compiles on linux systems using `g++`.
 
 This program depends on:
 - nothings stb_image.h - https://github.com/nothings/stb/
