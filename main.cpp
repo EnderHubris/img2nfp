@@ -67,7 +67,7 @@ std::string basename(const std::string& path) {
         return path;
 
     // path -> /var/www/imgs/lorem.png | ../../lorem.png | ./imgs/lorem.png
-    return path.substr(path.find_last_of('/'));
+    return path.substr(path.find_last_of('/')+1);
 }
 
 std::vector<Pixel> color_map = {

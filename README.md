@@ -56,5 +56,5 @@ term.redirect(term.native())
 ```console
 https://github.com/EnderHubris/img2nfp.git
 cd img2nfp
-make && ./img2nfp -h
+make
 ```
