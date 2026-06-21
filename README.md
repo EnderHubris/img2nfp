@@ -1,8 +1,10 @@
 # img2nfp
 Simple unix program for converting images into nfp files to be used in tweaked: cc.
+
 This program depends on:
 - nothings stb_image.h - https://github.com/nothings/stb/
 - CLI11 - https://github.com/CLIUtils/CLI11/
+
 These files are downloaded through the `Makefile`
 
 [How to build](#build)
