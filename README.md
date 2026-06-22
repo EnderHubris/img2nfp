@@ -3,7 +3,7 @@ Simple unix program for converting images into nfp files to be used in [tweaked:
 This program compiles on linux systems using `g++`.
 
 This program depends on:
-- nothings stb_image.h - https://github.com/nothings/stb/
+- nothings's simple image library - https://github.com/nothings/stb/
 - CLI11 - https://github.com/CLIUtils/CLI11/
 
 These files are downloaded through the `Makefile`
@@ -20,6 +20,8 @@ Options:
   -h,--help                   Print this help message and exit
   -o,--output TEXT            Name of ntp output file
   -p,--preview                Preview Output in terminal
+  -W,--width INT REQUIRED     Target width to scale to
+  -H,--height INT REQUIRED    Target height to scale to
 ```
 
 ### Keep in mind!
@@ -53,8 +55,10 @@ term.redirect(term.native())
 ```
 
 ## Build
+Input images are preserved, a scaled copy is created in memory temporarily.
 ```console
 https://github.com/EnderHubris/img2nfp.git
 cd img2nfp
-make
+make build
+./img2nfp -W <width> -H <height> /path/to/image
 ```

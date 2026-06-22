@@ -2,6 +2,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
+#include "stb_image_resize2.h"
+
 // https://github.com/CLIUtils/CLI11/releases/download/v2.3.2/CLI11.hpp
 #include "CLI11.hpp"
 #include <iostream>
@@ -149,14 +152,21 @@ int main(int argc, char** argv) {
     std::string inputFile;
     std::string outputFile;
 
+    int targetWidth = 0;
+    int targetHeight = 0;
+
     bool preview = false;
 
     CLI::App app{"img2nfp (Image Conversion Tool)"};
-    app.add_option("input", inputFile, "Path to image file [png,jpg,jpeg]")
+    app.add_option("input",         inputFile,      "Path to image file [png,jpg,jpeg]")
         ->required()
         ->type_name("Image File");
-    app.add_option("-o, --output",  outputFile, "Name of ntp output file");
-    app.add_flag("-p, --preview", preview, "Preview Output in terminal");
+    app.add_option("-o, --output",  outputFile,     "Name of ntp output file");
+    app.add_flag("-p, --preview",   preview,        "Preview Output in terminal");
+    app.add_option("-W,--width",    targetWidth,    "Target width to scale to")
+        ->required();
+    app.add_option("-H,--height",   targetHeight,   "Target height to scale to")
+        ->required();
     
     CLI11_PARSE(app, argc, argv);
 
@@ -172,12 +182,31 @@ int main(int argc, char** argv) {
         return 1;
     }
 
+    // create a rescaled copy in memory (preserve original input)
+    if (targetWidth > 0 && targetHeight > 0) {
+        uchar* resized = (uchar*)malloc(targetWidth * targetHeight * 3);
+
+        stbir_resize_uint8_linear(
+            data, width, height, 0,
+            resized, targetWidth, targetHeight, 0,
+            STBIR_RGB
+        );
+        stbi_image_free(data);
+        
+        data = resized;
+        width = targetWidth;
+        height = targetHeight;
+    } else {
+        std::cerr << "[-] Width and Height must be positive integers!";
+        return 1;
+    }
+
     PixelGroup pixels;
 
-    for (int y = 0; y < height; y++) {
+    for (int y = 0; y < targetHeight; y++) {
         pixels.push_back({}); // create new row
-        for (int x = 0; x < width; x++) {
-            int index = (y * width + x) * 3;
+        for (int x = 0; x < targetWidth; x++) {
+            int index = (y * targetWidth + x) * 3;
             uchar r = data[index];
             uchar g = data[index + 1];
             uchar b = data[index + 2];
@@ -191,7 +220,7 @@ int main(int argc, char** argv) {
 
     generateNFP(outputFile, pixels);
 
-    std::cout << "[*] Image Scale: " << width << "x" << height << "\n";
+    std::cout << "[*] Image Scale: " << targetWidth << "x" << targetHeight << "\n";
 
     stbi_image_free(data);
     return 0;
