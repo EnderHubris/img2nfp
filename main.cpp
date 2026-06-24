@@ -218,8 +218,8 @@ int main(int argc, char** argv) {
         if (preview) std::cout << "\n";
     }
 
-    generateNFP(outputFile, pixels);
-
+    if (!preview) generateNFP(outputFile, pixels);
+    
     std::cout << "[*] Image Scale: " << targetWidth << "x" << targetHeight << "\n";
 
     stbi_image_free(data);
